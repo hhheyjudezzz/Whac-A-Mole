@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<title>work tap wolf</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		#wrap{
+			width: 320px;
+			height: 480px;
+			margin: 0 auto;
+			position: relative;
+			transition:0.5s;
+			overflow: hidden;
+		}
+		#div1{
+			background-position: 0px 0px;
+			background-repeat: no-repeat;
+			height: 100px;
+			width: 100px;
+			position: absolute;
+		}
+		#div2{
+			background-position: 0px 0px;
+			background-repeat: no-repeat;
+			height: 100px;
+			width: 100px;
+			position: absolute;
+		}	
+		#scoreP{
+			position: absolute;
+			left: 59px;
+			top: 11px;
+			z-index: 5;
+			color: white;
+			font:26px/20px bold arial;
+		}
+		#start{
+			position: absolute;
+			left: 112px;
+			top:226px;
+			z-index: 5;
+			color: #F44336;
+			font:40px/20px bold arial;
+		}
+		#divPro{
+			width: 180px;
+			overflow: hidden;
+			position: absolute;
+			left: 63px;
+			top: 66px;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<p id="scoreP">00</p>
+		<p id="start">开始</p>
+		<div id="divPro">
+			<img id="progress" src="img/progress.png" alt="">
+		</div>
+		<img src="img/game_bg.jpg" alt="">
+		<div id="div1">	
+		</div>	
+		<div id="div2">	
+		</div>		
+	</div>
+</body>
+<script type="text/javascript">
+	var wrap= document.getElementById("wrap");
+	var div1= document.getElementById("div1");
+	var div2= document.getElementById("div2");
+	var scoreP =document.getElementById('scoreP');
+	var start =document.getElementById('start');
+	var timerAll=null;
+	var timer1= null;
+	var timer2= null;
+	var score= 0;
+	var gameTime= 100;
+	var gameInterval=null;
+	var jsonTop={
+		1: 160,2: 112,3: 140,4: 220,5: 191,6: 211,7: 293,8: 273,9: 295,
+	}
+	var jsonLeft={
+		1: 18,2: 98,3: 187,4: 18,5: 104,6: 199,7: 31,8: 119,9: 206,
+	};
+	var jsonUrl={
+		1:"url(img/h.png)",2:"url(img/x.png)"
+	};
+	//随机位置封装为函数(t为计时器 div1 div2分别用两个计时器)
+	function moveFn(element,urlR,t,a,b){
+		element.style.top=a+"px";//div1变量
+		element.style.left=b+"px";
+		moveTimer(element,urlR,t);
+	}
+	//背景图动画
+	function moveTimer(element,urlR,t){
+		// element.style.backgroundImage=urlR
+		var backgP= 0;
+		var v = -108;
+		var n=5;
+		var num= 0;
+		var clickBol1=true;
+		var clickBol2=true;	
+		t= setInterval(function(){
+			if(gameTime==100||gameTime==-1){
+				return;
+				clearInterval(t);
+			}
+			if(num>n-1){
+				element.style.backgroundImage="url()"
+				// console.log("清除定时器")
+				clearInterval(t)
+			}else{
+				backgP+=v;
+				element.style.backgroundPosition=backgP+"px"
+				element.style.backgroundImage=urlR
+				element.onclick=function(){
+					n=9;
+					console.log("click")
+					if(urlR=="url(img/h.png)"&&clickBol1==true){
+						score+=10;
+						clickBol1=false;
+					}else if(urlR=="url(img/x.png)"&&clickBol2==true){
+						score-=10;
+						clickBol2=false;
+					}
+					scoreP.innerText=score;
+				}
+			}
+			num++;			
+		},200)
+	}
+	//封装定时器，控制整体循环
+	// moveAll();
+	timerAll=setInterval(function(){
+		if(gameTime==100||gameTime==-1){
+			clearInterval(timer1);
+			clearInterval(timer2);
+			div1.style.backgroundImage="url()"
+			div2.style.backgroundImage="url()"
+			return;
+		}
+		clearInterval(timer1);
+		clearInterval(timer2);
+		moveAll();
+	},3000)
+	//一次大循环封装为函数
+	function moveAll(){
+		//随机出两个数
+		var arr=[1,2,3,4,5,6,7,8,9]
+		var random1 =parseInt(Math.random()*(9-0)+0);
+		var divPtn =arr[random1];
+		arr.splice(random1,1);
+		var divPtn2 =arr[parseInt(Math.random()*(8-0)+0)];
+		//随机图片并且分配概率
+		if(Math.random()>0.7){
+			randomB1=2
+		}else{
+			randomB1=1
+		}
+		if(Math.random()>0.7){
+			randomB2=2
+		}else{
+			randomB2=1
+		}		
+		//执行背景动画
+		moveFn(div1,jsonUrl[randomB1],timer1,jsonTop[divPtn],jsonLeft[divPtn]);
+		setTimeout(function(){
+			moveFn(div2,jsonUrl[randomB2],timer2,jsonTop[divPtn2],jsonLeft[divPtn2]);
+		},800)
+	}
+	//控制开始和进度条变化
+	start.onclick=function(){
+		 start.innerText="";
+		 gameInterval = setInterval(function(){
+		 	if(gameTime<0){
+		 		start.innerText="结束";
+		 		clearInterval(gameInterval)
+		 	}else{
+		 		gameTime-=1
+		 		divPro.style.width=(gameTime/100)*180+"px"
+		 	}
+		 },1000)
+	}
+</script>
+</html>

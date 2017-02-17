@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>work tap wolf</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		#wrap{
+			width: 320px;
+			height: 480px;
+			margin: 0 auto;
+			position: relative;
+			transition:0.5s;
+		}
+		#wrap img{
+			position: absolute;
+			transition:0.5s;
+		}
+		#h10{
+			/* 
+		1	top: 160px;
+    		left: 18px;
+    	2	top: 112px;
+    		left: 98px;
+    	3	top: 140px;
+    		left: 187px;
+    	4	top: 220px;
+    		left: 18px;
+    	5	top: 191px;
+    		left: 104px
+    	6	top: 211px;
+    		left: 199px;
+    	7	top: 293px;
+    		left: 31px;
+		8   top: 273px;
+    		left: 119px;
+    	9	top: 295px;
+    		left: 206px;	
+			*/		
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<img src="img/game_bg.jpg" alt="">
+		<img src="" alt="" id="h0" data-src="img/h0.png">
+		<img src="" alt="" id="h1" data-src="img/h1.png">
+		<img src="" alt="" id="h2" data-src="img/h2.png">
+		<img src="" alt="" id="h3" data-src="img/h3.png">
+		<img src="" alt="" id="h4" data-src="img/h4.png">
+		<img src="" alt="" id="h5" data-src="img/h5.png">
+		<img src="" alt="" id="h6" data-src="img/h6.png">
+		<img src="" alt="" id="h7" data-src="img/h7.png">
+		<img src="" alt="" id="h8" data-src="img/h8.png">
+		<img src="" alt="" id="h9" data-src="img/h9.png">
+		<!-- <img alt="" id="h10" src="img/h0.png">	 -->				
+	</div>
+</body>
+<script type="text/javascript">
+	var wrap= document.getElementById("wrap");
+	var imgH= [];
+	var imgHnum=6;
+	for(var i=0;i<10;i++){
+		imgH[i]= document.getElementsByTagName('img')[i+1];//imgH为变量
+	}
+	var num= 0;
+	var timer= null;
+	var  imgPtn=0;
+	var jsonTop={
+		1: 160,
+		2: 112,
+		3: 140,
+		4: 220,
+		5: 191,
+		6: 211,
+		7: 293,
+		8: 273,
+		9: 295,
+	}
+	var jsonLeft={
+		1: 18,
+		2: 98,
+		3: 187,
+		4: 18,
+		5: 104,		
+		6: 199,
+		7: 31,
+		8: 119,
+		9: 206,
+	};
+	//动画封装为函数
+
+	function moveFn(a,b){
+		
+		 timer= setInterval(function(){
+			if(num>imgHnum-1){
+				clearInterval(timer);
+			}else{
+				wrap.appendChild(imgH[num]);
+				imgH[num].src=imgH[num].getAttribute("data-src");//imgH变量
+				imgH[num].onclick=function(){
+					imgHnum=10;
+					//点击中了图5不消失
+					if(num==5){
+					imgH[num].src=imgH[num].getAttribute("data-src");
+					console.log(imgH[num].src);
+					}
+				}
+				if(num>0){
+					imgH[num-1].src="";
+				}
+				//有问题 
+				if(num==9||num==5){
+					imgH[num].src=""; 
+				}
+				imgH[num].style.top=a+"px";//变量
+				imgH[num].style.left=b+"px";
+			}
+			console.log(num);
+			num++;
+		},300)
+	}
+	imgPtn =parseInt(Math.random()*(9-1)+1);
+	moveFn(jsonTop[imgPtn],jsonLeft[imgPtn]);
+</script>
+</html>
